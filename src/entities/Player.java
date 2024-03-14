@@ -1,5 +1,6 @@
 package entities;
 
+import static main.Game.SCALES;
 import static utilz.Constants.PlayerConstants.*;
 import static utilz.HelpMethods.*;
 import java.awt.Graphics;
@@ -15,7 +16,7 @@ public class Player extends Entity {
 	private int playerAction = IDLE;
 	private boolean moving = false, attacking = false;
 	private boolean left, up, right, down, jump;
-	private float playerSpeed = 2.0f;
+	private float playerSpeed = 0.94f * SCALES;
 	private int[][] levelData;
 	private float xDrawOffset = 21 * Game.SCALES;
 	private float yDrawOffset = 4 * Game.SCALES;
@@ -30,7 +31,7 @@ public class Player extends Entity {
 	public Player(float x, float y, int width, int height) {
 		super(x, y, width, height);
 		loadAnimations();
-		initHitbox(x, y, 20 * Game.SCALES, 27 * Game.SCALES);
+		initHitbox(x, y, (int) (20 * Game.SCALES), (int) (27 * Game.SCALES));
 
 	}
 
@@ -41,8 +42,9 @@ public class Player extends Entity {
 	}
 
 	public void render(Graphics g) {
-		g.drawImage(animations[playerAction][aniIndex], (int) (hitBox.x - xDrawOffset), (int) (hitBox.y - yDrawOffset), width, height, null);
-//		drawhitBox(g);
+		g.drawImage(animations[playerAction][aniIndex], (int) (hitBox.x - xDrawOffset), (int) (hitBox.y - yDrawOffset),
+				width, height, null);
+		// drawhitBox(g);
 	}
 
 	private void updateAnimationTick() {

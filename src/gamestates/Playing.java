@@ -10,20 +10,24 @@ import java.awt.event.MouseEvent;
 import entities.Player;
 import levels.LevelManager;
 import main.Game;
+import ui.PauseOverPlay;
 
 public class Playing extends State implements StateMethods {
+    private Player player;
+    private LevelManager levelManager;
+    private boolean paused = true;
+    private PauseOverPlay pauseOverPlay;
+
     public Playing(Game game) {
         super(game);
         initClass();
     }
 
-    private Player player;
-    private LevelManager levelManager;
-
     private void initClass() {
         levelManager = new LevelManager(game);
         player = new Player(200, 200, (int) (64 * SCALES), (int) (40 * SCALES));
         player.loadLevelData(levelManager.getCurrLevel().getCurrLevelData());
+        pauseOverPlay = new PauseOverPlay();
     }
 
     public void windowFocusLost() {
@@ -38,7 +42,7 @@ public class Playing extends State implements StateMethods {
     public void update() {
         levelManager.update();
         player.update();
-
+        pauseOverPlay.update();
     }
 
     @Override
@@ -46,6 +50,7 @@ public class Playing extends State implements StateMethods {
 
         levelManager.draw(g);
         player.render(g);
+        pauseOverPlay.draw(g);
 
     }
 
@@ -60,20 +65,25 @@ public class Playing extends State implements StateMethods {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        // TODO Auto-generated method stub
+        if (paused) {
+            pauseOverPlay.mouseReleased(e);
+        }
 
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        // TODO Auto-generated method stub
+        if (paused) {
+            pauseOverPlay.mousePressed(e);
+        }
 
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        // TODO Auto-generated method stub
-
+        if (paused) {
+            pauseOverPlay.mouseMoved(e);
+        }
     }
 
     @Override

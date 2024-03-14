@@ -1,30 +1,60 @@
 package gamestates;
 
+import static main.Game.GAME_WIDTH;
+import static main.Game.SCALES;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 
 import main.Game;
+import ui.MenuButtons;
+import utilz.LoadSave;
 
 public class Menu extends State implements StateMethods {
+    private MenuButtons[] buttons = new MenuButtons[3];
+    private BufferedImage image;
+    private int menuX, menuY, menuWidth, menuHeight;
 
     public Menu(Game game) {
         super(game);
+        loadButton();
+        loadBackgroundImage();
         // TODO Auto-generated constructor stub
+    }
+
+    private void loadBackgroundImage() {
+        image = LoadSave.GetSpriteAtlas(LoadSave.BACKGROUND_MENU);
+        menuWidth = (int) (image.getWidth() * SCALES);
+        menuHeight = (int) (image.getHeight() * SCALES);
+        menuX = GAME_WIDTH / 2 - menuWidth / 2;
+        menuY = (int) (45 * SCALES);
+    }
+
+    private void loadButton() {
+
+        buttons[0] = new MenuButtons(GAME_WIDTH / 2, (int) (150 * SCALES), 0, GameState.PLAYING);
+        buttons[1] = new MenuButtons(GAME_WIDTH / 2, (int) (220 * SCALES), 1, GameState.OPTIONS);
+        buttons[2] = new MenuButtons(GAME_WIDTH / 2, (int) (290 * SCALES), 2, GameState.QUIT);
+
     }
 
     @Override
     public void update() {
-        // TODO Auto-generated method stub
-        
+        for (int i = 0; i < buttons.length; i++) {
+            buttons[i].update();
+        }
+
     }
 
     @Override
     public void draw(Graphics g) {
-        g.setColor(Color.PINK);
-        g.drawString("MENU", Game.GAME_WIDTH / 2, 200);
-       
+        g.drawImage(image, menuX, menuY, menuWidth, menuHeight, null);
+        for (int i = 0; i < buttons.length; i++) {
+            buttons[i].draw(g);
+        }
     }
 
     @Override
@@ -34,20 +64,52 @@ public class Menu extends State implements StateMethods {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        // TODO Auto-generated method stub
-        
+        for (int i = 0; i < buttons.length; i++) {
+            if (isIn(e, buttons[i])) {
+                if (buttons[i].getMousePressed()) {
+                    buttons[i].applyGameState();
+                }
+                break;
+            }
+        }
+        resetButtons();
+    }
+
+    private void resetButtons() {
+        try {
+            for (int i = 0; i < buttons.length; i++) {
+                buttons[i].resetMouse();
+            }
+        } catch (Exception e) {
+
+            throw new UnsupportedOperationException("Unimplemented method 'resetButtons'");
+        }
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        // TODO Auto-generated method stub
-       
+        for (int i = 0; i < buttons.length; i++) {
+            if (isIn(e, buttons[i])) {
+                buttons[i].setMousePressed(true);
+                break;
+            }
+        }
+
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        // TODO Auto-generated method stub
-      
+        for (int i = 0; i < buttons.length; i++) {
+            buttons[i].setMouseOver(false);
+        }
+        for (int i = 0; i < buttons.length; i++) {
+            if (isIn(e, buttons[i])) {
+                buttons[i].setMouseOver(true);
+                break;
+            }
+
+        }
+
     }
 
     @Override
@@ -55,13 +117,13 @@ public class Menu extends State implements StateMethods {
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             GameState.state = GameState.PLAYING;
         }
-       
+
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
         // TODO Auto-generated method stub
-        
+
     }
 
 }
