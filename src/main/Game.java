@@ -26,6 +26,7 @@ public class Game implements Runnable {
 
     public Game() {
         initClass();
+        
         gamePanel = new GamePanel(this);
         gamePanel.requestFocus();
         gameWindow = new GameWindow(gamePanel);
@@ -45,7 +46,6 @@ public class Game implements Runnable {
     }
 
     public void update() {
-
         switch (GameState.state) {
             case MENU:
                 menu.update();
@@ -60,7 +60,6 @@ public class Game implements Runnable {
                 System.exit(0);
                 break;
         }
-
     }
 
     public void render(Graphics g) {

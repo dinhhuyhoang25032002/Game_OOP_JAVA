@@ -17,13 +17,15 @@ import static main.Game.GAME_HEIGHT;;
 public class GamePanel extends JPanel {
 
     private MouseListenerInputs mouseListenerInputs;
+    private KeybroadInputs keybroadInputs;
     private Game game;
 
     public GamePanel(Game game) {
         mouseListenerInputs = new MouseListenerInputs(this);
+        keybroadInputs = new KeybroadInputs(this);
         this.game = game;
         setPanelSize();
-        addKeyListener(new KeybroadInputs(this));
+        addKeyListener(keybroadInputs);
         addMouseListener(mouseListenerInputs);
         addMouseMotionListener(mouseListenerInputs);
 

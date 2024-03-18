@@ -18,8 +18,8 @@ public class Player extends Entity {
 	private boolean left, up, right, down, jump;
 	private float playerSpeed = 0.94f * SCALES;
 	private int[][] levelData;
-	private float xDrawOffset = 21 * Game.SCALES;
-	private float yDrawOffset = 4 * Game.SCALES;
+
+	private boolean direction = false;
 
 	// Jumping / Gravity
 	private float airSpeed = 0f;
@@ -30,8 +30,8 @@ public class Player extends Entity {
 
 	public Player(float x, float y, int width, int height) {
 		super(x, y, width, height);
-		loadAnimations();
-		initHitbox(x, y, (int) (20 * Game.SCALES), (int) (27 * Game.SCALES));
+		loadAnimations(this.direction);
+		initHitbox(x, y, (int) (WIDTH_HITBOX), (int) (HEIGHT_HITBOX));
 
 	}
 
@@ -41,10 +41,11 @@ public class Player extends Entity {
 		setAnimation();
 	}
 
-	public void render(Graphics g) {
-		g.drawImage(animations[playerAction][aniIndex], (int) (hitBox.x - xDrawOffset), (int) (hitBox.y - yDrawOffset),
+	public void render(Graphics g, int levelOffset) {
+		g.drawImage(animations[playerAction][aniIndex], (int) (hitBox.x - X_DRAW_OFFSET) - levelOffset,
+				(int) (hitBox.y - Y_DRAW_OFFSET),
 				width, height, null);
-		// drawhitBox(g);
+		drawHitbox(g, levelOffset);
 	}
 
 	private void updateAnimationTick() {
@@ -93,8 +94,10 @@ public class Player extends Entity {
 
 		if (jump)
 			jump();
-		if (!left && !right && !inAir)
-			return;
+
+		if (!inAir)
+			if ((!left && !right) || (right && left))
+				return;
 
 		float xSpeed = 0;
 
@@ -149,14 +152,21 @@ public class Player extends Entity {
 
 	}
 
-	private void loadAnimations() {
+	private void loadAnimations(boolean direction) {
 
-		BufferedImage img = LoadSave.GetSpriteAtlas(LoadSave.PLAYER_ATLAS);
-
-		animations = new BufferedImage[9][6];
-		for (int j = 0; j < animations.length; j++)
-			for (int i = 0; i < animations[j].length; i++)
-				animations[j][i] = img.getSubimage(i * 64, j * 40, 64, 40);
+		if (direction == false) {
+			BufferedImage img = LoadSave.GetSpriteAtlas(LoadSave.PLAYER_ATLAS_RIGHT);
+			animations = new BufferedImage[9][6];
+			for (int j = 0; j < animations.length; j++)
+				for (int i = 0; i < animations[j].length; i++)
+					animations[j][i] = img.getSubimage(i * 64, j * 40, 64, 40);
+		} else {
+			BufferedImage img = LoadSave.GetSpriteAtlas(LoadSave.PLAYER_ATLAS_LEFT);
+			animations = new BufferedImage[9][6];
+			for (int j = 0; j < animations.length; j++)
+				for (int i = 0; i < animations[j].length; i++)
+					animations[j][i] = img.getSubimage((5 - i) * 64, j * 40, 64, 40);
+		}
 
 	}
 
@@ -214,4 +224,8 @@ public class Player extends Entity {
 		this.jump = jump;
 	}
 
+	public void setDirection(boolean direction) {
+		this.direction = direction;
+		loadAnimations(this.direction);
+	}
 }

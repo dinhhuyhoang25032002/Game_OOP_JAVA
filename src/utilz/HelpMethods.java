@@ -16,7 +16,9 @@ public class HelpMethods {
 	}
 
 	private static boolean IsSolid(float x, float y, int[][] levelData) {
-		if (x < 0 || x >= Game.GAME_WIDTH)
+
+		int maxWidth = levelData[0].length * Game.TILES_SIZE;
+		if (x < 0 || x >= maxWidth)
 			return true;
 		if (y < 0 || y >= Game.GAME_HEIGHT)
 			return true;
@@ -64,6 +66,10 @@ public class HelpMethods {
 
 		return true;
 
+	}
+
+	public static boolean isFloor(Rectangle2D.Float hitBox, float xSpeed, int[][] levelData) {
+		return IsSolid(hitBox.x + xSpeed, hitBox.y + hitBox.height+1, levelData);
 	}
 
 }

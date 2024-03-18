@@ -1,5 +1,8 @@
 package levels;
 
+import static main.Game.GAME_WIDTH;
+import static main.Game.TILES_IN_WIDTH;
+
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
@@ -31,11 +34,13 @@ public class LevelManager {
         }
     }
 
-    public void draw(Graphics g) {
+    public void draw(Graphics g, int levelOffset) {
         for (int i = 0; i < Game.TILES_IN_HEIGHT; i++) {
-            for (int j = 0; j < Game.TILES_IN_WIDTH; j++) {
+            for (int j = 0; j < levelOne.getCurrLevelData()[0].length; j++) {
                 int index = levelOne.GetSpriteIndex(i, j);
-                g.drawImage(levelSprite[index], j * Game.TILES_SIZE, i * Game.TILES_SIZE,Game.TILES_SIZE,Game.TILES_SIZE, null);
+                g.drawImage(levelSprite[index], j * Game.TILES_SIZE - levelOffset, i * Game.TILES_SIZE,
+                        Game.TILES_SIZE,
+                        Game.TILES_SIZE, null);
             }
         }
 
@@ -45,7 +50,7 @@ public class LevelManager {
 
     }
 
-    public Level getCurrLevel(){
+    public Level getCurrLevel() {
         return levelOne;
     }
 }

@@ -1,7 +1,6 @@
 package ui;
 
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
 
 public class PauseButton {
     protected int x, y, width, height;

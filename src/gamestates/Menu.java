@@ -1,5 +1,6 @@
 package gamestates;
 
+import static main.Game.GAME_HEIGHT;
 import static main.Game.GAME_WIDTH;
 import static main.Game.SCALES;
 
@@ -15,14 +16,14 @@ import utilz.LoadSave;
 
 public class Menu extends State implements StateMethods {
     private MenuButtons[] buttons = new MenuButtons[3];
-    private BufferedImage image;
+    private BufferedImage image, backgroundMenu;
     private int menuX, menuY, menuWidth, menuHeight;
 
     public Menu(Game game) {
         super(game);
         loadButton();
         loadBackgroundImage();
-        // TODO Auto-generated constructor stub
+        backgroundMenu = LoadSave.GetSpriteAtlas(LoadSave.MENU_BACKGROUND_IMG);
     }
 
     private void loadBackgroundImage() {
@@ -51,6 +52,7 @@ public class Menu extends State implements StateMethods {
 
     @Override
     public void draw(Graphics g) {
+        g.drawImage(backgroundMenu, 0, 0, GAME_WIDTH, GAME_HEIGHT, null);
         g.drawImage(image, menuX, menuY, menuWidth, menuHeight, null);
         for (int i = 0; i < buttons.length; i++) {
             buttons[i].draw(g);
