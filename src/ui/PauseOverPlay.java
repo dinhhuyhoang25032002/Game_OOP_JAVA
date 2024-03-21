@@ -24,6 +24,7 @@ public class PauseOverPlay {
     private UrmButtons menuB, replayB, unpauseB;
     private Playing playing;
     private VolumeButtons volumeButtons;
+
     public PauseOverPlay(Playing playing) {
         this.playing = playing;
         loadPauseBackground();
@@ -109,7 +110,8 @@ public class PauseOverPlay {
             }
         } else if (isIn(e, replayB)) {
             if (replayB.isMousePressed()) {
-                System.out.println("Replay level!");
+                playing.resetAll();
+                playing.unpauseGame();
             }
         } else if (isIn(e, unpauseB)) {
             if (unpauseB.isMousePressed()) {
@@ -138,7 +140,7 @@ public class PauseOverPlay {
             replayB.setMousePressed(true);
         } else if (isIn(e, unpauseB)) {
             unpauseB.setMousePressed(true);
-        }else if (isIn(e, volumeButtons)) {
+        } else if (isIn(e, volumeButtons)) {
             volumeButtons.setMousePressed(true);
         }
 
@@ -155,15 +157,13 @@ public class PauseOverPlay {
 
         } else if (isIn(e, sfxButton)) {
             sfxButton.setMouseOver(true);
-        }
-        else if (isIn(e, menuB)) {
+        } else if (isIn(e, menuB)) {
             menuB.setMouseOver(true);
-        }else if (isIn(e, replayB)) {
+        } else if (isIn(e, replayB)) {
             replayB.setMouseOver(true);
         } else if (isIn(e, unpauseB)) {
             unpauseB.setMouseOver(true);
-        }
-        else if (isIn(e, volumeButtons)) {
+        } else if (isIn(e, volumeButtons)) {
             volumeButtons.setMouseOver(true);
         }
     }

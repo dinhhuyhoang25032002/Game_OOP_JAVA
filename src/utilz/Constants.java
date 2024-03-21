@@ -7,6 +7,16 @@ import java.security.PublicKey;
 import main.Game;
 
 public class Constants {
+    public static class StatusBar {
+        public static final int STATUS_BAS_WIDTH = (int) (192 * SCALES);
+        public static final int STATUS_BAS_HEIGHT = (int) (58 * SCALES);
+        public static final int STATUS_BAS_X = (int) (12 * SCALES);
+        public static final int STATUS_BAS_Y = (int) (12 * SCALES);
+        public static final int HEALTH_BAR_WIDTH = (int) (150 * SCALES);
+        public static final int HEALTH_BAR_HEIGHT = (int) (4 * SCALES);
+        public static final int HEALTH_BAR_X_START = (int) (34 * SCALES);
+        public static final int HEALTH_BAR_Y_START = (int) (14 * SCALES);
+    }
 
     public static class EnemyConstants {
 
@@ -41,6 +51,24 @@ public class Constants {
                     }
             }
             return 0;
+        }
+
+        public static int GetMaxHealth(int enemyType) {
+            switch (enemyType) {
+                case CRABBY:
+                    return 9;
+                default:
+                    return 1;
+            }
+        }
+
+        public static int GetEnemyDamage(int enemyType) {
+            switch (enemyType) {
+                case CRABBY:
+                    return 1;
+                default:
+                    return 0;
+            }
         }
     }
 
@@ -101,11 +129,9 @@ public class Constants {
         public static final int RUNNING = 1;
         public static final int JUMP = 2;
         public static final int FALLING = 3;
-        public static final int GROUND = 4;
         public static final int HIT = 5;
-        public static final int ATTACK_1 = 6;
-        public static final int ATTACK_JUMP_1 = 7;
-        public static final int ATTACK_JUMP_2 = 8;
+        public static final int ATTACK = 4;
+        public static final int DEAD = 6;
 
         public static final int WIDTH_HITBOX_DEFAULT = 20;
         public static final int HEIGHT_HITBOX_DEFAULT = 27;
@@ -116,6 +142,8 @@ public class Constants {
 
         public static int getSpriteAmount(int player_actions) {
             switch (player_actions) {
+                case DEAD:
+                    return 8;
                 case RUNNING:
                     return 6;
                 case IDLE:
@@ -123,12 +151,8 @@ public class Constants {
                 case HIT:
                     return 4;
                 case JUMP:
-                case ATTACK_1:
-                case ATTACK_JUMP_1:
-                case ATTACK_JUMP_2:
+                case ATTACK:
                     return 3;
-                case GROUND:
-                    return 2;
                 case FALLING:
                 default:
                     return 1;

@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import gamestates.GameState;
 import gamestates.Menu;
 import gamestates.Playing;
+import utilz.LoadSave;
 
 public class Game implements Runnable {
     private GameWindow gameWindow;
@@ -25,8 +26,9 @@ public class Game implements Runnable {
     public static final int GAME_HEIGHT = TILES_IN_HEIGHT * TILES_SIZE;
 
     public Game() {
+        LoadSave.GetAllLevels();
         initClass();
-        
+
         gamePanel = new GamePanel(this);
         gamePanel.requestFocus();
         gameWindow = new GameWindow(gamePanel);

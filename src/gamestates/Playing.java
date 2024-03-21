@@ -11,9 +11,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.Random;
-
+import java.awt.geom.Rectangle2D;
 import static utilz.Constants.Environment.*;
-
+import ui.GameOver;
+import ui.LevelCompleteOverlay;
 import entities.EnemyManager;
 import entities.Player;
 import levels.LevelManager;
@@ -30,12 +31,15 @@ public class Playing extends State implements StateMethods {
     private int xLevelOffset;
     private int leftBorder = (int) (0.2 * Game.GAME_WIDTH);
     private int rightBorder = (int) (0.8 * Game.GAME_WIDTH);
-    private int levelTilesWide = LoadSave.GetLevelData()[0].length;
-    private int maxTilesOffset = levelTilesWide * Game.TILES_IN_WIDTH;
-    private int maxLevelOffsetX = maxTilesOffset * Game.TILES_SIZE;
+    private int maxLevelOffsetX;
+
     private Random rnd = new Random();
     private int[] smallCloudPos;
     private BufferedImage backgroundImgPlaying, imageCloud, imageSmallCloud;
+    private boolean GameOver;
+    private GameOver gameOver;
+    private LevelCompleteOverlay levelCompleteOverlay;
+    private boolean levelCompleted = false;
 
     public Playing(Game game) {
         super(game);
@@ -47,14 +51,44 @@ public class Playing extends State implements StateMethods {
         for (int i = 0; i < smallCloudPos.length; i++) {
             smallCloudPos[i] = (int) (70 * SCALES) + rnd.nextInt((int) (100 * SCALES));
         }
+        calcLevelOffsets();
+        loadStartLevel();
+    }
+
+    public void loadNextLevel() {
+        resetAll();
+        levelManager.loadNextLevel();
+        player.setSpawn(levelManager.getCurrLevel().getPlayerSpawn());
+    }
+
+    private void loadStartLevel() {
+        enemyManager.loadEnemies(levelManager.getCurrLevel());
+    }
+
+    private void calcLevelOffsets() {
+        maxLevelOffsetX = levelManager.getCurrLevel().getMaxLevelOffsetX();
+
     }
 
     private void initClass() {
         levelManager = new LevelManager(game);
         enemyManager = new EnemyManager(this);
-        player = new Player(200, 200, (int) (64 * SCALES), (int) (40 * SCALES));
+
+        player = new Player(200, 200, (int) (64 * SCALES), (int) (40 * SCALES), this);
         player.loadLevelData(levelManager.getCurrLevel().getCurrLevelData());
+        player.setSpawn(levelManager.getCurrLevel().getPlayerSpawn());
+        
         pauseOverPlay = new PauseOverPlay(this);
+        gameOver = new GameOver(this);
+        levelCompleteOverlay = new LevelCompleteOverlay(this);
+    }
+
+    public void checkEnemyHit(Rectangle2D.Float attackBox) {
+        enemyManager.checkEnemyHit(attackBox);
+    }
+
+    public void setGameOver(boolean GameOver) {
+        this.GameOver = GameOver;
     }
 
     public void windowFocusLost() {
@@ -67,15 +101,30 @@ public class Playing extends State implements StateMethods {
 
     @Override
     public void update() {
-        if (!paused) {
+
+        if (paused) {
+            pauseOverPlay.update();
+        } else if (levelCompleted) {
+            levelCompleteOverlay.update();
+        } else if (!GameOver) {
             levelManager.update();
             player.update();
-            enemyManager.update(levelManager.getCurrLevel().getCurrLevelData());
+            enemyManager.update(levelManager.getCurrLevel().getCurrLevelData(), player);
             checkCloseToBoder();
-        } else {
-            pauseOverPlay.update();
         }
 
+    }
+
+    public void resetAll() {
+        GameOver = false;
+        paused = false;
+        player.resetAll();
+        enemyManager.resetAllEnemies();
+        levelCompleted = false;
+    }
+
+    public void setLevelCompleted(boolean levelCompleted) {
+        this.levelCompleted = levelCompleted;
     }
 
     private void checkCloseToBoder() {
@@ -101,13 +150,19 @@ public class Playing extends State implements StateMethods {
         levelManager.draw(g, xLevelOffset);
         player.render(g, xLevelOffset);
         enemyManager.draw(g, xLevelOffset);
-        if (paused) {
+        if (paused && !GameOver) {
             g.setColor(new Color(0, 0, 0, 150));
             g.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
             pauseOverPlay.draw(g);
-
+        } else if (GameOver) {
+            gameOver.draw(g);
+        } else if (levelCompleted) {
+            levelCompleteOverlay.draw(g);
         }
+    }
 
+    public void setMaxLevelOffset(int levelOffset) {
+        this.maxLevelOffsetX = levelOffset;
     }
 
     private void drawClouds(Graphics g) {
@@ -125,81 +180,99 @@ public class Playing extends State implements StateMethods {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-
-        if (e.getButton() == MouseEvent.BUTTON1) {
-            player.setAttacking(true);
+        if (!GameOver) {
+            if (e.getButton() == MouseEvent.BUTTON1) {
+                player.setAttacking(true);
+            }
         }
-
     }
 
     public void mouseDragged(MouseEvent e) {
-        if (paused) {
-            pauseOverPlay.mouseDragged(e);
+        if (!GameOver) {
+            if (paused) {
+                pauseOverPlay.mouseDragged(e);
+            }
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (paused) {
-            pauseOverPlay.mouseReleased(e);
+        if (!GameOver) {
+            if (paused) {
+                pauseOverPlay.mouseReleased(e);
+            } else if (levelCompleted) {
+                levelCompleteOverlay.mouseReleased(e);
+            }
         }
-
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if (paused) {
-            pauseOverPlay.mousePressed(e);
+        if (!GameOver) {
+            if (paused) {
+                pauseOverPlay.mousePressed(e);
+            } else if (levelCompleted) {
+                levelCompleteOverlay.mousePressed(e);
+            }
         }
-
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        if (paused) {
-            pauseOverPlay.mouseMoved(e);
+        if (!GameOver) {
+            if (paused) {
+                pauseOverPlay.mouseMoved(e);
+            } else if (levelCompleted) {
+                levelCompleteOverlay.mouseMoved(e);
+            }
         }
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_A:
-                player.setLeft(true);
-                player.setDirection(true);
-                break;
-            case KeyEvent.VK_D:
-                player.setRight(true);
-                player.setDirection(false);
-                break;
+        if (GameOver) {
+            gameOver.keyPressed(e);
+        } else {
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_A:
+                    player.setLeft(true);
+                    break;
+                case KeyEvent.VK_D:
+                    player.setRight(true);
+                    break;
 
-            case KeyEvent.VK_SPACE:
-                player.setJump(true);
-                break;
-            case KeyEvent.VK_ESCAPE:
-                paused = !paused;
+                case KeyEvent.VK_SPACE:
+                    player.setJump(true);
+                    break;
+                case KeyEvent.VK_ESCAPE:
+                    paused = !paused;
+            }
         }
-
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_A:
-                player.setLeft(false);
-                break;
-            case KeyEvent.VK_D:
-                player.setRight(false);
-                break;
+        if (!GameOver) {
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_A:
+                    player.setLeft(false);
+                    break;
+                case KeyEvent.VK_D:
+                    player.setRight(false);
+                    break;
 
-            case KeyEvent.VK_SPACE:
-                player.setJump(false);
-                break;
+                case KeyEvent.VK_SPACE:
+                    player.setJump(false);
+                    break;
+            }
         }
-
     }
 
     public void unpauseGame() {
         paused = false;
+    }
+
+    public EnemyManager getEnemyManager() {
+        return enemyManager;
     }
 }
