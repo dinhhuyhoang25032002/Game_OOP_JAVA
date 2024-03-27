@@ -2,11 +2,50 @@ package utilz;
 
 import static main.Game.SCALES;
 
-import java.security.PublicKey;
-
 import main.Game;
 
 public class Constants {
+
+    public static final float GRAVITY = 0.04f * SCALES;
+    public static final int ANISPEED = 25;
+
+    public static class ObjectConstants {
+
+        public static final int RED_POTION = 0;
+        public static final int BLUE_POTION = 1;
+        public static final int BARREL = 2;
+        public static final int BOX = 3;
+        public static final int SPIKE = 4;
+
+        public static final int RED_POTION_VALUE = 15;
+        public static final int BLUE_POTION_VALUE = 10;
+
+        public static final int CONTAINER_WIDTH_DEFAULT = 40;
+        public static final int CONTAINER_HEIGHT_DEFAULT = 30;
+        public static final int CONTAINER_WIDTH = (int) (SCALES * CONTAINER_WIDTH_DEFAULT);
+        public static final int CONTAINER_HEIGHT = (int) (SCALES * CONTAINER_HEIGHT_DEFAULT);
+
+        public static final int POTION_WIDTH_DEFAULT = 12;
+        public static final int POTION_HEIGHT_DEFAULT = 16;
+        public static final int POTION_WIDTH = (int) (SCALES * POTION_WIDTH_DEFAULT);
+        public static final int POTION_HEIGHT = (int) (SCALES * POTION_HEIGHT_DEFAULT);
+
+        public static final int SPIKE_WIDTH_DEFAULT = 32;
+        public static final int SPIKE_HEIGHT_DEFAULT = 32;
+        public static final int SPIKE_WIDTH = (int) (SCALES * SPIKE_WIDTH_DEFAULT);
+        public static final int SPIKE_HEIGHT = (int) (SCALES * SPIKE_HEIGHT_DEFAULT);
+
+        public static int GetSpriteAmount(int object_type) {
+            switch (object_type) {
+                case RED_POTION, BLUE_POTION:
+                    return 7;
+                case BARREL, BOX:
+                    return 8;
+            }
+            return 1;
+        }
+    }
+
     public static class StatusBar {
         public static final int STATUS_BAS_WIDTH = (int) (192 * SCALES);
         public static final int STATUS_BAS_HEIGHT = (int) (58 * SCALES);
@@ -19,9 +58,7 @@ public class Constants {
     }
 
     public static class EnemyConstants {
-
         public static final int CRABBY = 0;
-
         public static final int IDLE = 0;
         public static final int RUNNING = 1;
         public static final int ATTACK = 2;
@@ -56,7 +93,7 @@ public class Constants {
         public static int GetMaxHealth(int enemyType) {
             switch (enemyType) {
                 case CRABBY:
-                    return 9;
+                    return 99;
                 default:
                     return 1;
             }
@@ -135,8 +172,7 @@ public class Constants {
 
         public static final int WIDTH_HITBOX_DEFAULT = 20;
         public static final int HEIGHT_HITBOX_DEFAULT = 27;
-        public static final int WIDTH_HITBOX = (int) (WIDTH_HITBOX_DEFAULT * SCALES);
-        public static final int HEIGHT_HITBOX = (int) (HEIGHT_HITBOX_DEFAULT * SCALES);
+
         public static final float X_DRAW_OFFSET = 21 * Game.SCALES;
         public static final float Y_DRAW_OFFSET = 4 * Game.SCALES;
 

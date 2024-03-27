@@ -2,6 +2,11 @@ package utilz;
 
 import static main.Game.TILES_SIZE;
 import static utilz.Constants.EnemyConstants.CRABBY;
+import static utilz.Constants.ObjectConstants.BARREL;
+import static utilz.Constants.ObjectConstants.BLUE_POTION;
+import static utilz.Constants.ObjectConstants.BOX;
+import static utilz.Constants.ObjectConstants.RED_POTION;
+import static utilz.Constants.ObjectConstants.SPIKE;
 
 import java.awt.Color;
 import java.awt.Point;
@@ -11,6 +16,9 @@ import java.util.ArrayList;
 
 import entities.Crabby;
 import main.Game;
+import objects.GameContainer;
+import objects.Potion;
+import objects.Spike;
 
 public class HelpMethods {
 
@@ -136,17 +144,6 @@ public class HelpMethods {
 		return new Point(2 * TILES_SIZE, 3 * TILES_SIZE);
 	}
 
-	// public static Point GetPlayerSpawn(BufferedImage img) {
-	// 	for (int j = 0; j < img.getHeight(); j++)
-	// 		for (int i = 0; i < img.getWidth(); i++) {
-	// 			Color color = new Color(img.getRGB(i, j));
-	// 			int value = color.getGreen();
-	// 			if (value == 100)
-	// 				return new Point(i * Game.TILES_SIZE, j * Game.TILES_SIZE);
-	// 		}
-	// 	return new Point(1 * Game.TILES_SIZE, 1 * Game.TILES_SIZE);
-	// }
-
 	public static ArrayList<Crabby> GetCrabs(BufferedImage img) {
 		ArrayList<Crabby> list = new ArrayList<>();
 		for (int i = 0; i < img.getHeight(); i++) {
@@ -155,6 +152,48 @@ public class HelpMethods {
 				int value = color.getGreen();
 				if (value == CRABBY) {
 					list.add(new Crabby(j * TILES_SIZE, i * TILES_SIZE));
+				}
+			}
+		}
+		return list;
+	}
+
+	public static ArrayList<Potion> GetPotion(BufferedImage img) {
+		ArrayList<Potion> list = new ArrayList<>();
+		for (int i = 0; i < img.getHeight(); i++) {
+			for (int j = 0; j < img.getWidth(); j++) {
+				Color color = new Color(img.getRGB(j, i));
+				int value = color.getBlue();
+				if (value == RED_POTION || value == BLUE_POTION) {
+					list.add(new Potion(j * TILES_SIZE, i * TILES_SIZE, value));
+				}
+			}
+		}
+		return list;
+	}
+
+	public static ArrayList<GameContainer> GetContainers(BufferedImage img) {
+		ArrayList<GameContainer> list = new ArrayList<>();
+		for (int i = 0; i < img.getHeight(); i++) {
+			for (int j = 0; j < img.getWidth(); j++) {
+				Color color = new Color(img.getRGB(j, i));
+				int value = color.getBlue();
+				if (value == BARREL || value == BOX) {
+					list.add(new GameContainer(j * TILES_SIZE, i * TILES_SIZE, value));
+				}
+			}
+		}
+		return list;
+	}
+
+	public static ArrayList<Spike> GetSpikes(BufferedImage img) {
+		ArrayList<Spike> list = new ArrayList<>();
+		for (int i = 0; i < img.getHeight(); i++) {
+			for (int j = 0; j < img.getWidth(); j++) {
+				Color color = new Color(img.getRGB(j, i));
+				int value = color.getBlue();
+				if (value == SPIKE) {
+					list.add(new Spike(j * TILES_SIZE, i * TILES_SIZE, SPIKE));
 				}
 			}
 		}

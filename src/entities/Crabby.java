@@ -9,13 +9,11 @@ import java.awt.Graphics;
 import java.awt.geom.Rectangle2D;
 
 public class Crabby extends Enemy {
-
-    private Rectangle2D.Float attackBox;
     private int attackBoxOffseX;
 
     public Crabby(float x, float y) {
         super(x, y, CRABBY_WIDTH, CRABBY_HEIGHT, CRABBY);
-        initHitbox(x, y, (int) (22 * SCALES), (int) (19 * SCALES));
+        initHitbox(22, 19);
         initAttackBox();
     }
 
@@ -42,7 +40,7 @@ public class Crabby extends Enemy {
         if (inAir) {
             updateInAir(levelData);
         } else {
-            switch (enemyState) {
+            switch (state) {
                 case IDLE:
                     newState(RUNNING);
                     break;
@@ -66,11 +64,6 @@ public class Crabby extends Enemy {
             }
         }
     }
-
-    // public void drawAttackBox(Graphics g, int xLevelOffset) {
-    //     g.setColor(Color.GREEN);
-    //     g.drawRect((int) attackBox.x - xLevelOffset, (int) attackBox.y, (int) attackBox.width, (int) attackBox.height);
-    // }
 
     public int flipX() {
         if (walkDir == RIGHT) {

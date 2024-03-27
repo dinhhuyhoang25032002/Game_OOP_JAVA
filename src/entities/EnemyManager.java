@@ -54,7 +54,7 @@ public class EnemyManager {
                         (int) crabbies.get(i).getHitbox().y - CRABBY_DRAW_OFFSET_Y,
                         CRABBY_WIDTH * crabbies.get(i).flipW(),
                         CRABBY_HEIGHT, null);
-              //  crabbies.get(i).drawAttackBox(g, xLevelOffset);
+                // crabbies.get(i).drawAttackBox(g, xLevelOffset);
             }
         }
     }
@@ -63,7 +63,7 @@ public class EnemyManager {
         for (int i = 0; i < crabbies.size(); i++) {
             if (crabbies.get(i).isActive()) {
                 if (attackBox.intersects(crabbies.get(i).getHitbox())) {
-                    crabbies.get(i).hurt(10);
+                    crabbies.get(i).hurt(150);
                     return;
                 }
             }

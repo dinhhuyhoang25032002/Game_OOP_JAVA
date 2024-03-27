@@ -12,6 +12,8 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 import java.awt.geom.Rectangle2D;
+import java.awt.geom.Rectangle2D.Float;
+
 import static utilz.Constants.Environment.*;
 import ui.GameOver;
 import ui.LevelCompleteOverlay;
@@ -19,6 +21,7 @@ import entities.EnemyManager;
 import entities.Player;
 import levels.LevelManager;
 import main.Game;
+import objects.ObjectManager;
 import ui.PauseOverPlay;
 import utilz.LoadSave;
 
@@ -40,6 +43,7 @@ public class Playing extends State implements StateMethods {
     private GameOver gameOver;
     private LevelCompleteOverlay levelCompleteOverlay;
     private boolean levelCompleted = false;
+    private ObjectManager objectManager;
 
     public Playing(Game game) {
         super(game);
@@ -59,10 +63,12 @@ public class Playing extends State implements StateMethods {
         resetAll();
         levelManager.loadNextLevel();
         player.setSpawn(levelManager.getCurrLevel().getPlayerSpawn());
+
     }
 
     private void loadStartLevel() {
         enemyManager.loadEnemies(levelManager.getCurrLevel());
+        objectManager.loadObjects(levelManager.getCurrLevel());
     }
 
     private void calcLevelOffsets() {
@@ -73,11 +79,12 @@ public class Playing extends State implements StateMethods {
     private void initClass() {
         levelManager = new LevelManager(game);
         enemyManager = new EnemyManager(this);
+        objectManager = new ObjectManager(this);
 
         player = new Player(200, 200, (int) (64 * SCALES), (int) (40 * SCALES), this);
         player.loadLevelData(levelManager.getCurrLevel().getCurrLevelData());
         player.setSpawn(levelManager.getCurrLevel().getPlayerSpawn());
-        
+
         pauseOverPlay = new PauseOverPlay(this);
         gameOver = new GameOver(this);
         levelCompleteOverlay = new LevelCompleteOverlay(this);
@@ -108,6 +115,7 @@ public class Playing extends State implements StateMethods {
             levelCompleteOverlay.update();
         } else if (!GameOver) {
             levelManager.update();
+            objectManager.update();
             player.update();
             enemyManager.update(levelManager.getCurrLevel().getCurrLevelData(), player);
             checkCloseToBoder();
@@ -119,8 +127,9 @@ public class Playing extends State implements StateMethods {
         GameOver = false;
         paused = false;
         player.resetAll();
-        enemyManager.resetAllEnemies();
         levelCompleted = false;
+        enemyManager.resetAllEnemies();
+        objectManager.resetAll();
     }
 
     public void setLevelCompleted(boolean levelCompleted) {
@@ -143,13 +152,28 @@ public class Playing extends State implements StateMethods {
         }
     }
 
+    public void checkPotionTouched(Rectangle2D.Float hitBox) {
+        objectManager.checkObjectTouched(hitBox);
+    }
+
+    public void checkObjecthitbox(Rectangle2D.Float attackBox) {
+        objectManager.checkObjectHit(attackBox);
+    }
+
+    public void checkSpikesTouched(Player player) {
+        objectManager.checkSpikesTouched(player);
+    }
+
     @Override
     public void draw(Graphics g) {
         g.drawImage(backgroundImgPlaying, 0, 0, GAME_WIDTH, GAME_HEIGHT, null);
         drawClouds(g);
+
         levelManager.draw(g, xLevelOffset);
         player.render(g, xLevelOffset);
         enemyManager.draw(g, xLevelOffset);
+        objectManager.draw(g, xLevelOffset);
+
         if (paused && !GameOver) {
             g.setColor(new Color(0, 0, 0, 150));
             g.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
@@ -250,6 +274,10 @@ public class Playing extends State implements StateMethods {
         }
     }
 
+    public LevelManager getLevelManager() {
+        return levelManager;
+    }
+
     @Override
     public void keyReleased(KeyEvent e) {
         if (!GameOver) {
@@ -275,4 +303,9 @@ public class Playing extends State implements StateMethods {
     public EnemyManager getEnemyManager() {
         return enemyManager;
     }
+
+    public ObjectManager getObjectManager() {
+        return objectManager;
+    }
+
 }

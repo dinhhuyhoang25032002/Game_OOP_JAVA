@@ -34,7 +34,6 @@ public class Game implements Runnable {
         gameWindow = new GameWindow(gamePanel);
 
         startGameLoop();
-
     }
 
     private void initClass() {

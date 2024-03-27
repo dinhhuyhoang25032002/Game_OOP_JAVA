@@ -135,7 +135,9 @@ public class PauseOverPlay {
         } else if (isIn(e, sfxButton)) {
             sfxButton.setMousePressed(true);
         } else if (isIn(e, menuB)) {
+           // playing.resetAll();
             menuB.setMousePressed(true);
+          
         } else if (isIn(e, replayB)) {
             replayB.setMousePressed(true);
         } else if (isIn(e, unpauseB)) {

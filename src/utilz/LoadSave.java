@@ -30,6 +30,9 @@ public class LoadSave {
     public static final String CRABBY_SPRITE = "crabby_sprite.png";
     public static final String STATUS_BAS = "health_power_bar.png";
     public static final String LEVEL_COMPLETE = "completed_sprite.png";
+    public static final String POTION_SPRITES = "potions_sprites.png";
+    public static final String OBJECT_SPRITES = "objects_sprites.png";
+    public static final String TRAP_ATLAS = "trap_atlas.png";
 
     public static BufferedImage GetSpriteAtlas(String fileName) {
         BufferedImage img = null;
