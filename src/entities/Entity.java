@@ -1,11 +1,8 @@
 package entities;
 
 import static main.Game.SCALES;
-import static utilz.Constants.EnemyConstants.IDLE;
-
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.geom.Rectangle2D;
 import java.awt.geom.Rectangle2D;
 
 public abstract class Entity {
@@ -51,4 +48,9 @@ public abstract class Entity {
     public Rectangle2D.Float getHitbox() {
         return hitBox;
     }
+
+    public int getCurrentHealth() {
+        return currentHealth;
+    }
+    
 }

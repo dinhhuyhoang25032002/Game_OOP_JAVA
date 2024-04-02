@@ -2,11 +2,6 @@ package main;
 
 import javax.swing.JFrame;
 
-import static main.Game.GAME_HEIGHT;
-import static main.Game.GAME_WIDTH;
-
-// import java.awt.Dimension;
-// import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 
@@ -30,7 +25,6 @@ public class GameWindow {
 
             @Override
             public void windowGainedFocus(WindowEvent e) {
-                // TODO Auto-generated method stub
 
             }
         });

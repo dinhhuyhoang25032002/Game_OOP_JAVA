@@ -3,9 +3,6 @@ package entities;
 import static main.Game.SCALES;
 import static utilz.Constants.Direction.RIGHT;
 import static utilz.Constants.EnemyConstants.*;
-
-import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.geom.Rectangle2D;
 
 public class Crabby extends Enemy {
@@ -24,6 +21,7 @@ public class Crabby extends Enemy {
 
     public void update(int[][] levelData, Player player) {
         updateBehavior(levelData, player);
+       
         updateAnimationTick();
         updateAttackBox();
     }

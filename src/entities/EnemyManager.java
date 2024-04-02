@@ -1,10 +1,11 @@
 package entities;
 
 import java.awt.Graphics;
-import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+
+import audio.PlayerAudio;
 import levels.Level;
 import static utilz.Constants.EnemyConstants.*;
 
@@ -38,6 +39,8 @@ public class EnemyManager {
         }
         if (!isAnyActive) {
             playing.setLevelCompleted(true);
+            
+            playing.getGame().getPlayerAudio().levelCompleted();
         }
     }
 
@@ -62,9 +65,11 @@ public class EnemyManager {
     public void checkEnemyHit(Rectangle2D.Float attackBox) {
         for (int i = 0; i < crabbies.size(); i++) {
             if (crabbies.get(i).isActive()) {
-                if (attackBox.intersects(crabbies.get(i).getHitbox())) {
-                    crabbies.get(i).hurt(150);
-                    return;
+                if (crabbies.get(i).getCurrentHealth() > 0) {
+                    if (attackBox.intersects(crabbies.get(i).getHitbox())) {
+                        crabbies.get(i).hurt(150);
+                        return;
+                    }
                 }
             }
         }

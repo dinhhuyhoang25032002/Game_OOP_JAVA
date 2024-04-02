@@ -1,9 +1,13 @@
 package main;
 
 import java.awt.Graphics;
+
+import audio.PlayerAudio;
+import gamestates.GameOptions;
 import gamestates.GameState;
 import gamestates.Menu;
 import gamestates.Playing;
+import ui.AudioOptions;
 import utilz.LoadSave;
 
 public class Game implements Runnable {
@@ -16,7 +20,9 @@ public class Game implements Runnable {
 
     private Playing playing;
     private Menu menu;
-
+    private AudioOptions audioOptions;
+    private GameOptions gameOptions;
+    private PlayerAudio playerAudio;
     public static final int TILES_DEFAULT_SIZE = 32;
     public static final float SCALES = 1.2f;
     public static final int TILES_SIZE = (int) (TILES_DEFAULT_SIZE * SCALES);
@@ -37,8 +43,15 @@ public class Game implements Runnable {
     }
 
     private void initClass() {
+        audioOptions = new AudioOptions(this);
+        playerAudio = new PlayerAudio();
         menu = new Menu(this);
         playing = new Playing(this);
+        gameOptions = new GameOptions(this);
+    }
+
+    public AudioOptions getAudioOptions() {
+        return audioOptions;
     }
 
     private void startGameLoop() {
@@ -55,8 +68,9 @@ public class Game implements Runnable {
                 playing.update();
                 break;
             case OPTIONS:
-            case QUIT:
+                gameOptions.update();
                 break;
+            case QUIT:
             default:
                 System.exit(0);
                 break;
@@ -71,23 +85,22 @@ public class Game implements Runnable {
             case PLAYING:
                 playing.draw(g);
                 break;
+            case OPTIONS:
+                gameOptions.draw(g);
+                break;
             default:
                 break;
         }
-
     }
 
     @Override
     public void run() {
         double timePerFrame = 1000000000.0 / FPS_SET;
         double timePerUpdate = 1000000000.0 / UPS_SET;
-
         long previousTime = System.nanoTime();
         int frames = 0;
         int updates = 0;
-
         long lastCheck = System.currentTimeMillis();
-
         double deltaU = 0;
         double deltaF = 0;
 
@@ -111,13 +124,15 @@ public class Game implements Runnable {
 
             if (System.currentTimeMillis() - lastCheck >= 1000) {
                 lastCheck = System.currentTimeMillis();
-                System.out.println("FPS: " + frames + " | UPS: " + updates);
+              //  System.out.println("FPS: " + frames + " | UPS: " + updates);
                 frames = 0;
                 updates = 0;
-
             }
         }
+    }
 
+    public PlayerAudio getPlayerAudio() {
+        return playerAudio;
     }
 
     public void windowFocusLost() {
@@ -132,5 +147,9 @@ public class Game implements Runnable {
 
     public Playing getPlaying() {
         return playing;
+    }
+
+    public GameOptions getGameOptions() {
+        return gameOptions;
     }
 }

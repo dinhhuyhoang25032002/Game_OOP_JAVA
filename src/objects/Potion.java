@@ -2,8 +2,6 @@ package objects;
 
 import static main.Game.SCALES;
 
-import main.Game;
-
 public class Potion extends GameObject {
     private float hoverOffset;
     private int maxHoverOffset, hoverDir = 1;

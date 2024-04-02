@@ -83,4 +83,9 @@ public class MenuButtons {
     public void applyGameState() {
         GameState.state = state;
     }
+
+    public GameState getState() {
+        return state;
+    }
+    
 }

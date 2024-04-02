@@ -5,6 +5,8 @@ import static utilz.Constants.EnemyConstants.CRABBY;
 import static utilz.Constants.ObjectConstants.BARREL;
 import static utilz.Constants.ObjectConstants.BLUE_POTION;
 import static utilz.Constants.ObjectConstants.BOX;
+import static utilz.Constants.ObjectConstants.CANNON_LEFT;
+import static utilz.Constants.ObjectConstants.CANNON_RIGHT;
 import static utilz.Constants.ObjectConstants.RED_POTION;
 import static utilz.Constants.ObjectConstants.SPIKE;
 
@@ -16,8 +18,10 @@ import java.util.ArrayList;
 
 import entities.Crabby;
 import main.Game;
+import objects.Cannon;
 import objects.GameContainer;
 import objects.Potion;
+import objects.Projectile;
 import objects.Spike;
 
 public class HelpMethods {
@@ -93,13 +97,38 @@ public class HelpMethods {
 		return IsSolid(hitBox.x + xSpeed, hitBox.y + hitBox.height + 1, levelData);
 	}
 
-	public static boolean isAllTileWalkable(int startX, int endX, int y, int[][] levelData) {
-		for (int i = 0; i < endX - startX; i++) {
-			if (IsTileSolid(startX + i, y, levelData)) {
+	public static boolean CanCannonSeePlayer(int[][] levelData, Rectangle2D.Float firstHitbox,
+			Rectangle2D.Float secondHitbox,
+			int tileY) {
+		int firstXTile = (int) (firstHitbox.x / TILES_SIZE);
+		int secondXTile = (int) (secondHitbox.x / TILES_SIZE);
+		if (firstXTile > secondXTile) {
+			return IsAllTilesClear(secondXTile, firstXTile, tileY, levelData);
+		} else {
+			return IsAllTilesClear(firstXTile, secondXTile, tileY, levelData);
+		}
+	}
+
+	public static boolean IsAllTilesClear(int xStart, int xEnd, int y, int[][] levelData) {
+		for (int i = 0; i < xEnd - xStart; i++) {
+			if (IsTileSolid(xStart + i, y, levelData)) {
 				return false;
 			}
-			if (!IsTileSolid(startX + i, y + 1, levelData)) {
-				return false;
+		}
+		return true;
+	}
+
+	public static boolean IsProjectileHitting(Projectile projectile, int[][] levelData) {
+		return IsSolid(projectile.getHitBox().x + projectile.getHitBox().width / 2,
+				projectile.getHitBox().y + projectile.getHitBox().height / 2, levelData);
+	}
+
+	public static boolean isAllTileWalkable(int startX, int endX, int y, int[][] levelData) {
+		if (IsAllTilesClear(startX, endX, y, levelData)) {
+			for (int i = 0; i < endX - startX; i++) {
+				if (!IsTileSolid(startX + i, y + 1, levelData)) {
+					return false;
+				}
 			}
 		}
 		return true;
@@ -194,6 +223,20 @@ public class HelpMethods {
 				int value = color.getBlue();
 				if (value == SPIKE) {
 					list.add(new Spike(j * TILES_SIZE, i * TILES_SIZE, SPIKE));
+				}
+			}
+		}
+		return list;
+	}
+
+	public static ArrayList<Cannon> GetCannon(BufferedImage img) {
+		ArrayList<Cannon> list = new ArrayList<>();
+		for (int i = 0; i < img.getHeight(); i++) {
+			for (int j = 0; j < img.getWidth(); j++) {
+				Color color = new Color(img.getRGB(j, i));
+				int value = color.getBlue();
+				if (value == CANNON_LEFT || value == CANNON_RIGHT) {
+					list.add(new Cannon(j * TILES_SIZE, i * TILES_SIZE, value));
 				}
 			}
 		}

@@ -1,6 +1,7 @@
 package entities;
 
 import static main.Game.SCALES;
+import static main.Game.TILES_SIZE;
 import static utilz.Constants.PlayerConstants.*;
 import static utilz.Constants.StatusBar.*;
 import static utilz.HelpMethods.*;
@@ -11,6 +12,7 @@ import java.awt.Point;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
+import audio.PlayerAudio;
 import gamestates.Playing;
 import main.Game;
 import utilz.Constants;
@@ -26,21 +28,21 @@ public class Player extends Entity {
 	private int flipW = 1;
 	private boolean attackCheck;
 	// Jumping / Gravity
-	private float jumpSpeed = -2.95f * Game.SCALES;
+	private float jumpSpeed = -2.75f * Game.SCALES;
 	private float fallSpeedAfterCollision = 0.5f * Game.SCALES;
 	// Status bas
 	private BufferedImage statusbas;
 	private int healthWidth = HEALTH_BAR_WIDTH;
 	// AttackBox
-
 	private Playing playing;
+	private int tileY = 0;
 
 	public Player(float x, float y, int width, int height, Playing playing) {
 		super(x, y, width, height);
 		this.playing = playing;
 		this.state = IDLE;
 		this.maxHealth = 100;
-		walkSpeed = 0.75f * SCALES;
+		walkSpeed = 0.79f * SCALES;
 		this.currentHealth = maxHealth;
 		loadAnimations();
 		initHitbox(WIDTH_HITBOX_DEFAULT, HEIGHT_HITBOX_DEFAULT);
@@ -61,7 +63,19 @@ public class Player extends Entity {
 	public void update() {
 		updateHealthBar();
 		if (currentHealth <= 0) {
-			playing.setGameOver(true);
+			if (state != DEAD) {
+				state = DEAD;
+				aniTick = 0;
+				aniIndex = 0;
+				playing.setPlayerDying(true);
+				playing.getGame().getPlayerAudio().playEffect(PlayerAudio.DIE);
+			} else if (aniIndex == getSpriteAmount(DEAD) - 1 && aniTick >= ANISPEED - 1) {
+				playing.setGameOver(true);
+				playing.getGame().getPlayerAudio().stopSong();
+				playing.getGame().getPlayerAudio().playEffect(PlayerAudio.GAMEOVER);
+			} else {
+				updateAnimationTick();
+			}
 			return;
 		}
 
@@ -70,9 +84,10 @@ public class Player extends Entity {
 		if (moving) {
 			checkPotionTouched();
 			checkSpikesTouched();
+			tileY = (int) (hitBox.y / TILES_SIZE);
 		}
 		if (attacking) {
-			checkAttack();
+			checkAttack(this);
 		}
 		updateAnimationTick();
 		setAnimation();
@@ -86,19 +101,20 @@ public class Player extends Entity {
 		playing.checkPotionTouched(hitBox);
 	}
 
-	private void checkAttack() {
+	private void checkAttack(Player player) {
 		if (attackCheck || aniIndex != 1)
 			return;
 		attackCheck = true;
 		playing.checkEnemyHit(attackBox);
 		playing.checkObjecthitbox(attackBox);
+		playing.getGame().getPlayerAudio().playAttackSound();;
 	}
 
 	private void updateAttackBox() {
 		if (right) {
-			attackBox.x = hitBox.x + hitBox.width + (int) SCALES * 5;
+			attackBox.x = hitBox.x + hitBox.width + (int) SCALES * 2;
 		} else if (left) {
-			attackBox.x = hitBox.x - hitBox.width - (int) SCALES * 5;
+			attackBox.x = hitBox.x - hitBox.width - (int) SCALES * 2;
 		}
 		attackBox.y = hitBox.y + (int) SCALES * 10;
 	}
@@ -224,7 +240,6 @@ public class Player extends Entity {
 					airSpeed = fallSpeedAfterCollision;
 				updateXPos(xSpeed);
 			}
-
 		} else
 			updateXPos(xSpeed);
 		moving = true;
@@ -233,6 +248,7 @@ public class Player extends Entity {
 	private void jump() {
 		if (inAir)
 			return;
+		playing.getGame().getPlayerAudio().playEffect(PlayerAudio.JUMP);
 		inAir = true;
 		airSpeed = jumpSpeed;
 	}
@@ -302,6 +318,7 @@ public class Player extends Entity {
 		resetDirBooleans();
 		inAir = false;
 		attacking = false;
+		jump = false;
 		moving = false;
 		state = IDLE;
 		currentHealth = maxHealth;
@@ -314,6 +331,10 @@ public class Player extends Entity {
 
 	public void kill() {
 		currentHealth = 0;
+	}
+
+	public int getTileY() {
+		return tileY;
 	}
 
 }

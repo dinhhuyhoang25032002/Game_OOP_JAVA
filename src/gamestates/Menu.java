@@ -3,8 +3,6 @@ package gamestates;
 import static main.Game.GAME_HEIGHT;
 import static main.Game.GAME_WIDTH;
 import static main.Game.SCALES;
-
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -61,7 +59,10 @@ public class Menu extends State implements StateMethods {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        // TODO Auto-generated method stub
+        int x = 0;
+        if (x > 0) {
+            x = 0;
+        }
     }
 
     @Override
@@ -70,6 +71,9 @@ public class Menu extends State implements StateMethods {
             if (isIn(e, buttons[i])) {
                 if (buttons[i].getMousePressed()) {
                     buttons[i].applyGameState();
+                }
+                if (buttons[i].getState() == GameState.PLAYING) {
+                    game.getPlayerAudio().setLevelSong(game.getPlaying().getLevelManager().getLevelIndex());
                 }
                 break;
             }
@@ -124,7 +128,7 @@ public class Menu extends State implements StateMethods {
 
     @Override
     public void keyReleased(KeyEvent e) {
-        // TODO Auto-generated method stub
+    
 
     }
 

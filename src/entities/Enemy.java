@@ -11,7 +11,6 @@ import static utilz.Constants.*;
 public abstract class Enemy extends Entity {
     protected int enemyType;
     protected boolean firstUpdate = true;
-   
     protected int walkDir = LEFT;
     protected int tileY;
     protected float attackDistance = TILES_SIZE;
@@ -21,7 +20,7 @@ public abstract class Enemy extends Entity {
     public Enemy(float x, float y, int width, int height, int enemyType) {
         super(x, y, width, height);
         this.enemyType = enemyType;
-        initHitbox( width, height);
+        initHitbox(width, height);
         maxHealth = GetMaxHealth(enemyType);
 
         currentHealth = maxHealth;
@@ -55,6 +54,7 @@ public abstract class Enemy extends Entity {
             player.changeHealth(-GetEnemyDamage(enemyType));
         }
         attackChecked = true;
+
     }
 
     protected void moved(int[][] levelData) {
@@ -82,6 +82,10 @@ public abstract class Enemy extends Entity {
             }
         }
         return false;
+    }
+
+    public void setAttackChecked(boolean attackChecked) {
+        this.attackChecked = attackChecked;
     }
 
     public void hurt(int amount) {
@@ -119,6 +123,7 @@ public abstract class Enemy extends Entity {
         this.state = state;
         aniTick = 0;
         aniIndex = 0;
+
     }
 
     protected void updateAnimationTick() {
@@ -129,9 +134,16 @@ public abstract class Enemy extends Entity {
             if (aniIndex >= getSpriteAmount(enemyType, state)) {
                 aniIndex = 0;
 
+                // if (state == DEAD) {
+                //     active = false;
+                // } else if (state == HIT) {
+                //     state = IDLE;
+                // } else if (state == ATTACK) {
+                //     state = IDLE;
+                // }
                 switch (state) {
-                    case ATTACK, HIT -> state = IDLE;
                     case DEAD -> active = false;
+                    case HIT, ATTACK -> state = IDLE;
                 }
             }
         }

@@ -6,12 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
 import javax.imageio.ImageIO;
-import entities.Crabby;
-import static main.Game.TILES_SIZE;
-import static utilz.Constants.EnemyConstants.CRABBY;
-import java.awt.Color;
 
 public class LoadSave {
     public static final String PLAYER_ATLAS = "player_sprites.png";
@@ -33,6 +28,10 @@ public class LoadSave {
     public static final String POTION_SPRITES = "potions_sprites.png";
     public static final String OBJECT_SPRITES = "objects_sprites.png";
     public static final String TRAP_ATLAS = "trap_atlas.png";
+    public static final String CANNON_ATLAS = "cannon_atlas.png";
+    public static final String BALL_CANNON = "ball.png";
+    public static final String DEATH_SCREEN = "death_screen.png";
+    public static final String OPTIONS_BACKGROUND = "options_background.png";
 
     public static BufferedImage GetSpriteAtlas(String fileName) {
         BufferedImage img = null;

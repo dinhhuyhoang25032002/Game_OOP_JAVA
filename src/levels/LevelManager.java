@@ -1,7 +1,6 @@
 package levels;
 
-import static main.Game.GAME_WIDTH;
-import static main.Game.TILES_IN_WIDTH;
+
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -44,6 +43,10 @@ public class LevelManager {
         for (int i = 0; i < allLevels.length; i++) {
             levels.add(new Level(allLevels[i]));
         }
+    }
+
+    public int getLevelIndex() {
+        return levelIndex;
     }
 
     private void ImportOutsideSprites() {

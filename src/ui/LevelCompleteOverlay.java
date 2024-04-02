@@ -3,11 +3,8 @@ package ui;
 import static main.Game.GAME_WIDTH;
 import static main.Game.SCALES;
 import static utilz.Constants.UI.UrmButtons.URM_BUTTONS_SIZE;
-
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 import gamestates.GameState;

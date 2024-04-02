@@ -2,13 +2,12 @@ package inputs;
 
 import java.awt.event.KeyListener;
 
-import entities.Player;
 import gamestates.GameState;
 
 import java.awt.event.KeyEvent;
 
 import main.GamePanel;
-import static utilz.Constants.Direction.*;
+
 
 public class KeybroadInputs implements KeyListener {
     private GamePanel gamePanel;
@@ -19,7 +18,7 @@ public class KeybroadInputs implements KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
-        // TODO Auto-generated method stub
+     
 
     }
 
@@ -45,6 +44,9 @@ public class KeybroadInputs implements KeyListener {
                 break;
             case PLAYING:
                 gamePanel.getGame().getPlaying().keyPressed(e);
+                break;
+            case OPTIONS:
+                gamePanel.getGame().getGameOptions().keyPressed(e);
                 break;
             default:
                 break;

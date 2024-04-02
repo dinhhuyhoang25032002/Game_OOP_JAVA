@@ -51,6 +51,7 @@ public class UrmButtons extends PauseButton {
 
     public void setMousePressed(boolean mousePressed) {
         this.mousePressed = mousePressed;
+        
     }
 
     public boolean isMouseOver() {
